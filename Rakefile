@@ -14,13 +14,14 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
-  gem.name = "bio-rdf2json"
-  gem.homepage = "http://github.com/joejimbo/bioruby-rdf2json"
+  gem.name = "rdf2json"
+  gem.homepage = "http://github.com/joejimbo/rdf2json"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "joachim.baran@gmail.com"
-  gem.authors = ["Joachim Baran"]
+  gem.summary = %Q{RDF N-Triples and N-Quads to JSON-LD or JSON converter.}
+  gem.description = %Q{Converts RDF N-Triples and N-Quads files to either JSON-LD or JSON. Supports minimization of long URIs to shorter descriptive key names.}
+  gem.email = 'joachim.baran@gmail.com'
+  gem.authors = [ 'Joachim Baran' ]
+  gem.executable = 'rdf2json'
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
@@ -45,7 +46,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "bio-rdf2json #{version}"
+  rdoc.title = "rdf2json #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
