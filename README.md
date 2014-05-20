@@ -16,8 +16,8 @@ Usage: `rdf2json [options] --input filename.nt --output filename.json`
 #### Options
 
 *  `-m`, `--minimize`: Minimize JSON-LD to plain (semantically untyped) JSON.
-*  `-n`, `--namespace [NAMESPACE]`: Alternative name for JSON-LD's "@id" key; replaces it; turns on --minimize
-*  `-p`, `--prefix [PREFIX]`: Prefix that should be removed from keys; requires --minimize.
+*  `-n`, `--namespace [NAMESPACE]`: Alternative name for JSON-LD's "@id" key; replaces it; turns on `--minimize`
+*  `-p`, `--prefix [PREFIX]`: Prefix that should be removed from keys; requires `--minimize`.
 *  `-t`, `--triples`: Input file is in RDF N-Triples format.
 *  `-q`, `--quads`: Input file is in RDF N-Quads format.
 
