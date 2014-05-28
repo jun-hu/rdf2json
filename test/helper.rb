@@ -24,11 +24,12 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 require 'test/unit'
+require 'minitest'
 require 'shoulda'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'bio-rdf2json'
+require 'rdf2json'
 
 class Test::Unit::TestCase
 end
