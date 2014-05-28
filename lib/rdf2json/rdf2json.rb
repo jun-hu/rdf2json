@@ -5,8 +5,13 @@ require 'rdf/nquads'
 require 'json/ld'
 require 'optparse'
 
+# Module that contains a class for transforming RDF N-Triples/N-Quads into
+# JSON/JSON-LD as well as a command line interface implementation for user
+# interactions.
 module RDF2JSON
 
+# Command line interface; reads parameters, outputs help, or proceeds with the
+# transformation of RDF N-Triples/N-Quads into JSON/JSON-LD.
 def self.cli
   options = {}
 
@@ -17,6 +22,13 @@ def self.cli
     opts.separator 'Description: Reads RDF N-Triple/N-Quads that are sorted by subject and'
     opts.separator '             append a JSON/JSON-LD document per line in a designated'
     opts.separator '             output file.'
+    opts.separator ''
+    opts.separator 'Notes:'
+    opts.separator '             Sorting on Mac OS X & Linux:'
+    opts.separator '               sort -k 1,1 UNSORTED.EXT > SORTED.EXT'
+    opts.separator ''
+    opts.separator '             More information on the --minimize parameter:'
+    opts.separator '               https://github.com/joejimbo/rdf2json'
     opts.separator ''
     opts.separator 'Required:'
 
@@ -118,8 +130,19 @@ def self.cli
   end
 end
 
+# Class that takes an input file (RDF N-Triples/N-Quads) and appends JSON/JSON-LD to
+# a possible pre-existing output file. A namespace and prefix can be given that handle
+# `--namespace` and `--prefix` parameters in conjunction with the `--minimize` parameter.
 class Converter
 
+  # Initializes a new converter instance.
+  #
+  # +input_filename+:: path/filename of the input file in RDF N-Triples/N-Quads
+  * +output_filename+:: path/filename of the output file to which JSON/JSON-LD is being appended
+  # +input_format+:: format of the input file (:ntriples or :nquads)
+  # +output_format+:: format of the output (:json or jsonld)
+  # +namespace+:: a possible namespace for replacing "@id" keys (may be nil)
+  # +prefix+:: a possible prefix for shortening keys (may be nil)
   def initialize(input_filename, output_filename, input_format, output_format, namespace, prefix)
     @input_file = File.open(input_filename, 'r')
     @output_file = File.open(output_filename, 'a')
@@ -129,6 +152,12 @@ class Converter
     @prefix = prefix
   end
 
+  # Convert the input file by appending the newly formatted data to the output file.
+  #
+  # At the end of the conversion a short statistic is output. It tells the number of
+  # lines read from the input file, the number of errors in the N-Triples/N-Quads file,
+  # the number of JSON/JSON-LD documents appended to the output file (equiv. to number
+  # of lines appended).
   def convert
     no_of_lines = 0
     no_of_statements = 0
@@ -163,6 +192,9 @@ class Converter
     puts "JSON/JSON-LD documents output                : #{no_of_statements}"
   end
 
+  # Minimize a JSON-LD hash to JSON.
+  #
+  # +jsonld_hash+:: a JSON-LD hash that should be rewritten to plain JSON
   def minify(jsonld_hash)
     jsonld_hash.keys.each { |key|
       if key == '@type' then
@@ -187,9 +219,14 @@ class Converter
     }
   end
 
+  # Takes a block of RDF statements that share the same subject and creates
+  # a JSON/JSON-LD document from them, which is appended to the output file.
+  #
+  # +block+:: one or more lines that share the same subject in RDF N-Triples/N-Quads
   def write_graph(block)
     return { :read_errors => 0, :no_of_statements => 0 } unless block and not block.empty?
 
+    # Virtuoso output error-handling:
     block.gsub!("\\'", "'")
 
     read_errors = 0

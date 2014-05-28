@@ -8,6 +8,20 @@ output file.
 
 Usage: `rdf2json [options] --input filename.nt --output filename.json`
 
+#### Preliminaries
+
+RDF N-Triples/N-Quads need to be sorted by subject, so that
+it is possible to output JSON/JSON-LD documents on-the-fly,
+without holding the entire input in memory or falling back to
+time consuming file-pointer seek operations.
+
+Both RDF formats can be sorted on Mac OS X and Linux using the
+following shell command:
+
+```sh
+sort -k 1,1 UNSORTED.EXT > SORTED.EXT
+```
+
 #### Required options
 
 *  `-i`, `--input FILE`: Input file for the conversion; either RDF N-Triples or N-Quads.
@@ -24,6 +38,16 @@ Usage: `rdf2json [options] --input filename.nt --output filename.json`
 #### Common options
 
 *  `-h`, `--help`: Show this message.
+
+#### JSON output (`--minimize` option)
+
+*  replaces "@id" keys with an alternative name if the `--namespace` option is present
+*  keys that start with the prefix of `--prefix` are shortened (prefix is removed)
+*  array contents are "lifted up", i.e. for each entry of the array:
+   *  hashes with a "@value" key are replaced by the value of "@value", or else
+   *  hashes with a "@id" key are replaced by the value of "@id", or else
+   *  the array value is left unchanged
+*  removes all "@type" key/value pairs
 
 ## Installation
 
