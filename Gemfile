@@ -8,6 +8,7 @@ gem "json-ld", ">= 1.1.3"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
+  gem "minitest", ">= 5.3.4"
   gem "shoulda", ">= 0"
   gem "simplecov", ">= 0"
   gem "jeweler", "~> 1.8.4"
