@@ -138,7 +138,7 @@ class Converter
   # Initializes a new converter instance.
   #
   # +input_filename+:: path/filename of the input file in RDF N-Triples/N-Quads
-  * +output_filename+:: path/filename of the output file to which JSON/JSON-LD is being appended
+  # +output_filename+:: path/filename of the output file to which JSON/JSON-LD is being appended
   # +input_format+:: format of the input file (:ntriples or :nquads)
   # +output_format+:: format of the output (:json or jsonld)
   # +namespace+:: a possible namespace for replacing "@id" keys (may be nil)
