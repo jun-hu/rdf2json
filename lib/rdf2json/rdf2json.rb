@@ -187,6 +187,8 @@ class Converter
     no_of_statements += stats[:no_of_statements]
     read_errors += stats[:read_errors]
 
+    @output_file.close
+
     puts "Total number of lines read                   : #{no_of_lines}"
     puts "Statement read errors (N-Quads or N-Triples) : #{read_errors}"
     puts "JSON/JSON-LD documents output                : #{no_of_statements}"
