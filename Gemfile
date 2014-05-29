@@ -5,6 +5,9 @@ source "http://rubygems.org"
 gem "rdf", ">= 1.1.3"
 gem "json-ld", ">= 1.1.3"
 
+# Coverage via Coveralls:
+gem 'coveralls', require: false
+
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
