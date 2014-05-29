@@ -84,9 +84,11 @@ def self.option_parser(argv = nil)
     opts.on_tail('-s', '--silent', 'Do not output summary statistics.') { |silent|
       options[:silent] = true
     }
+    opts.on_tail('-v', '--version', 'Displays the version number of the software.') { |version|
+      options[:version] = true
+    }
     opts.on_tail('-h', '--help', 'Show this message.') { |help|
-      puts opts
-      return 0
+      options[:help] = true
     }
   }
 
@@ -99,6 +101,17 @@ def self.option_parser(argv = nil)
   rescue
     puts parser
     return 1
+  end
+
+  if options[:help] then
+    puts parser
+    return 0
+  end
+
+  if options[:version] then
+    # Workaround: rdf2json does not appear in the gem list when testing; reason unclear.
+    puts "rdf2json #{Gem.loaded_specs['rdf2json'].version}" if Gem.loaded_specs.has_key?('rdf2json')
+    return 0
   end
 
   unless options.has_key?(:input) and options.has_key?(:output) then

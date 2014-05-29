@@ -104,6 +104,12 @@ EOI
       TestRDF2JSON.silence('option_parser', argv).must_equal(0)
     end
 
+    it 'version requested' do
+      argv = [ [ '--version' ] ]
+      #TestRDF2JSON.silence('option_parser', argv).must_equal(0)
+      RDF2JSON.option_parser([ '--version' ])
+    end
+
     it 'nonsense parameters provided' do
       argv = [ [ '--hey', '--hello', '--wassup' ] ]
       TestRDF2JSON.silence('option_parser', argv).must_equal(1)
