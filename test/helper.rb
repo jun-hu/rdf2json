@@ -1,3 +1,16 @@
+require 'simplecov'
+
+module SimpleCov::Configuration
+  def clean_filters
+    @filters = []
+  end
+end
+
+SimpleCov.configure do
+  clean_filters
+  load_adapter 'test_frameworks'
+end
+
 require 'rubygems'
 require 'bundler'
 begin
@@ -15,19 +28,7 @@ require 'shoulda'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'simplecov'
 require 'coveralls'
-
-module SimpleCov::Configuration
-  def clean_filters
-    @filters = []
-  end
-end
-
-SimpleCov.configure do
-  clean_filters
-  load_adapter 'test_frameworks'
-end
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
