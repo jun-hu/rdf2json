@@ -37,6 +37,7 @@ SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
   add_filter 'test'
   add_filter 'gems'
+  add_filter 'rubies'
   add_group 'Converter', 'lib'
 end
 
