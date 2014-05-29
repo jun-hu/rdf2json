@@ -13,7 +13,7 @@ module RDF2JSON
 # Command line interface; reads parameters, outputs help, or proceeds with the
 # transformation of RDF N-Triples/N-Quads into JSON/JSON-LD.
 def self.cli
-  options = {}
+  options = { :silent => false }
 
   parser = OptionParser.new { |opts|
     opts.banner = 'Usage: rdf2json [options] --input filename.nt --output filename.json'
@@ -126,7 +126,7 @@ def self.cli
 
   begin
     # Why instantiate a Converter instance here? Well, for implementing parallelization later:
-    Converter.new(options[:input], options[:output], input_format, output_format, options[:namespace], options[:prefix], options[:silent]).convert
+    Converter.new(options[:input], options[:output], input_format, output_format, options[:namespace], options[:prefix], !options[:silent]).convert
   rescue Interrupt
     # The user hit Ctrl-C, which is okay and does not need error reporting.
     exit 0
