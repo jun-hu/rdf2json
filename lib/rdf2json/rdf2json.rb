@@ -143,13 +143,15 @@ class Converter
   # +output_format+:: format of the output (:json or jsonld)
   # +namespace+:: a possible namespace for replacing "@id" keys (may be nil)
   # +prefix+:: a possible prefix for shortening keys (may be nil)
-  def initialize(input_filename, output_filename, input_format, output_format, namespace, prefix)
+  # +summary+:: determines whether summary statistics should be printed (may be nil; means no summary)
+  def initialize(input_filename, output_filename, input_format, output_format, namespace = nil, prefix = nil, summary = nil)
     @input_file = File.open(input_filename, 'r')
     @output_file = File.open(output_filename, 'a')
     @input_format = input_format
     @output_format = output_format
     @namespace = namespace
     @prefix = prefix
+    @summary = summary
   end
 
   # Convert the input file by appending the newly formatted data to the output file.
@@ -160,6 +162,7 @@ class Converter
   # of lines appended).
   def convert
     no_of_lines = 0
+    documents = 0
     no_of_statements = 0
     read_errors = 0
     last_subject = nil
@@ -167,14 +170,16 @@ class Converter
 
     @input_file.each_line { |line|
       no_of_lines += 1
-      line.chomp!
 
       subject = "#{line.sub(/>.*/, '')}>"
+
+      last_subject = subject unless last_subject
 
       if subject == last_subject then
         subject_block << line
       else
         stats = write_graph(subject_block)
+        documents += stats[:documents]
         no_of_statements += stats[:no_of_statements]
         read_errors += stats[:read_errors]
         subject_block = ''
@@ -184,14 +189,18 @@ class Converter
     }
 
     stats = write_graph(subject_block)
+    documents += stats[:documents]
     no_of_statements += stats[:no_of_statements]
     read_errors += stats[:read_errors]
 
     @output_file.close
 
-    puts "Total number of lines read                   : #{no_of_lines}"
-    puts "Statement read errors (N-Quads or N-Triples) : #{read_errors}"
-    puts "JSON/JSON-LD documents output                : #{no_of_statements}"
+    if @summary then
+      puts "Total number of lines read                   : #{no_of_lines}"
+      puts "Statement read errors (N-Quads or N-Triples) : #{read_errors}"
+      puts "Statements that are captured in JSON/JSON-LD : #{no_of_statements}"
+      puts "JSON/JSON-LD documents output                : #{documents}"
+    end
   end
 
   # Minimize a JSON-LD hash to JSON.
@@ -226,7 +235,7 @@ class Converter
   #
   # +block+:: one or more lines that share the same subject in RDF N-Triples/N-Quads
   def write_graph(block)
-    return { :read_errors => 0, :no_of_statements => 0 } unless block and not block.empty?
+    return { :read_errors => 0, :no_of_statements => 0, :documents => 0 } unless block and not block.empty?
 
     # Virtuoso output error-handling:
     block.gsub!("\\'", "'")
@@ -245,6 +254,7 @@ class Converter
       end
     }
 
+    documents = 0
     JSON::LD::API::fromRdf(graph) { |document|
       document.each{ |entity|
         # Parsed JSON-LD representation:
@@ -254,10 +264,11 @@ class Converter
         minify(entity) if @output_format == :json
 
         @output_file.puts entity.to_json
+        documents += 1
       }
     }
 
-    return { :read_errors => read_errors, :no_of_statements => no_of_statements }
+    return { :read_errors => read_errors, :no_of_statements => no_of_statements, :documents => documents }
   end
 
 end
