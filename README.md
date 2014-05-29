@@ -1,6 +1,7 @@
 # rdf2json
 
 [![Build Status](https://secure.travis-ci.org/joejimbo/rdf2json.png)](http://travis-ci.org/joejimbo/rdf2json)
+[![Coverage Status](https://coveralls.io/repos/joejimbo/rdf2json/badge.png?branch=master)](https://coveralls.io/r/joejimbo/rdf2json?branch=master)
 
 Reads RDF N-Triple/N-Quads that are sorted by subject and
 append a JSON/JSON-LD document per line in a designated
