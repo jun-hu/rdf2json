@@ -37,6 +37,7 @@ sort -k 1,1 UNSORTED.EXT > SORTED.EXT
 
 #### Common options
 
+*  `-s`, `--silent`: Do not output summary statistics.
 *  `-h`, `--help`: Show this message.
 
 #### JSON output (`--minimize` option)
