@@ -13,6 +13,25 @@ module RDF2JSON
 # Command line interface; reads parameters, outputs help, or proceeds with the
 # transformation of RDF N-Triples/N-Quads into JSON/JSON-LD.
 def self.cli
+  options_or_exit_code = option_parser
+
+  exit options_or_exit_code unless options_or_exit_code.kind_of?(Hash)
+  options = options_or_exit_code
+  
+  begin
+    # Why instantiate a Converter instance here? Well, for implementing parallelization later:
+    Converter.new(options[:input], options[:output], options[:input_format], options[:output_format], options[:namespace], options[:prefix], !options[:silent]).convert
+  rescue Interrupt
+    # The user hit Ctrl-C, which is okay and does not need error reporting.
+    exit 0
+  end
+end
+
+# Command line option parser. Returns either the set options as a hash, or,
+# returns an integer that indicates the shell error return code.
+#
+# +argv+:: optional command line arguments (may be nil; for unit testing)
+def self.option_parser(argv = nil)
   options = { :silent => false }
 
   parser = OptionParser.new { |opts|
@@ -67,22 +86,26 @@ def self.cli
     }
     opts.on_tail('-h', '--help', 'Show this message.') { |help|
       puts opts
-      exit
+      return 0
     }
   }
 
   begin
-    parser.parse!
+    if argv then
+      parser.parse! argv
+    else
+      parser.parse!
+    end
   rescue
     puts parser
-    exit 1
+    return 1
   end
 
   unless options.has_key?(:input) and options.has_key?(:output) then
     puts 'Error: Requires --input and --output parameters.'
     puts ''
     puts parser
-    exit 2
+    return 2
   end
 
   if options.has_key?(:ntriples) and options.has_key?(:nquads) then
@@ -91,18 +114,18 @@ def self.cli
     puts '       setting the input fileformat.'
     puts ''
     puts parser
-    exit 3
+    return 3
   end
 
   extension = File.extname(options[:input])
   if options.has_key?(:ntriples) then
-    input_format = :ntriples
+    options[:input_format] = :ntriples
   elsif options.has_key?(:nquads) then
-    input_format = :nquads
+    options[:input_format] = :nquads
   elsif extension == '.nt' then
-    input_format = :ntriples
+    options[:input_format] = :ntriples
   elsif extension == '.nq' then
-    input_format = :nquads
+    options[:input_format] = :nquads
   else
     puts 'Error: Cannot determine input file format by filename extension.'
     puts '       Recognized fileformat extensions are .nt and .nq for N-Triples'
@@ -111,26 +134,20 @@ def self.cli
     puts '       when one of those options is given.'
     puts ''
     puts parser
-    exit 4
+    return 4
   end
 
-  output_format = :jsonld
-  output_format = :json if options[:minimize]
+  options[:output_format] = :jsonld
+  options[:output_format] = :json if options[:minimize]
 
   unless File.exist?(options[:input]) then
     puts 'Error: Input file (--input parameter) does not seem to exist.'
     puts ''
     puts parser
-    exit 6
+    return 6
   end
 
-  begin
-    # Why instantiate a Converter instance here? Well, for implementing parallelization later:
-    Converter.new(options[:input], options[:output], input_format, output_format, options[:namespace], options[:prefix], !options[:silent]).convert
-  rescue Interrupt
-    # The user hit Ctrl-C, which is okay and does not need error reporting.
-    exit 0
-  end
+  return options
 end
 
 # Class that takes an input file (RDF N-Triples/N-Quads) and appends JSON/JSON-LD to

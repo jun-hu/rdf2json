@@ -5,8 +5,8 @@ require 'tempfile'
 # Test the RDF N-Triples/N-Quads to JSON/JSON-LD conversion.
 class TestRDF2JSON < Minitest::Test
 
-    # RDF N-Triples test dataset:
-    @@test_ntriples = <<-EOI
+  # RDF N-Triples test dataset:
+  @@test_ntriples = <<-EOI
 <s1> <http://test/p1> <o1> .
 <s1> <p2> "l1" .
 <s1> <p3> <o3> .
@@ -15,8 +15,8 @@ class TestRDF2JSON < Minitest::Test
 <s2> <p4> "l2" .
 EOI
 
-    # RDF N-Triples test dataset:
-    @@test_nquads = <<-EOI
+  # RDF N-Triples test dataset:
+  @@test_nquads = <<-EOI
 <s1> <http://test/p1> <o1> <g1> .
 <s1> <p2> "l1" <g1> .
 <s1> <p3> <o3> <g1> .
@@ -24,6 +24,9 @@ EOI
 <s2> <http://test/p1> <o5> <g2> .
 <s2> <p4> "l2" <g2> .
 EOI
+
+  # Dummy file path for a fake input file; command line parameter testing.
+  @@dummy_file = '/tmp/non_existing_file_239805167_ALHFASBIWEO.nt'
 
   # Creates a temporary file that holds either N-Triples or N-Quads.
   #
@@ -60,6 +63,51 @@ EOI
     reference.each_index { |index|
       output[index].must_equal(reference[index])
     }
+  end
+
+  # Temporarily redirect STDOUT, so that the testing output
+  # does not get cluttered.
+  #
+  # +method+:: name of the class method that should be called on RDF2JSON
+  # +parameters+:: optional parameters for the method call
+  def self.silence(method, parameters = nil)
+    stdout, $stdout = $stdout, StringIO.new
+    result = RDF2JSON.send(method, *parameters)
+    $stdout = stdout
+
+    return result
+  end
+
+  # Command line parameter tests.
+  describe 'Command line parameters' do
+    it 'no input or output specified' do
+      TestRDF2JSON.silence('option_parser').must_equal(2)
+    end
+
+    it 'input file does not exist' do
+      argv = [ [ '--input', @@dummy_file, '--output', '/dev/null' ] ]
+      TestRDF2JSON.silence('option_parser', argv).must_equal(6)
+    end
+
+    it 'input file format cannot be determined by extension' do
+      argv = [ [ '--input', @@dummy_file + '.unknown', '--output', '/dev/null' ] ]
+      TestRDF2JSON.silence('option_parser', argv).must_equal(4)
+    end
+
+    it 'both RDF N-Triples and RDF N-Quads specified as input format' do
+      argv = [ [ '--input', @@dummy_file, '--output', '/dev/null', '--triples', '--quads' ] ]
+      TestRDF2JSON.silence('option_parser', argv).must_equal(3)
+    end
+
+    it 'help requested' do
+      argv = [ [ '--help' ] ]
+      TestRDF2JSON.silence('option_parser', argv).must_equal(0)
+    end
+
+    it 'nonsense parameters provided' do
+      argv = [ [ '--hey', '--hello', '--wassup' ] ]
+      TestRDF2JSON.silence('option_parser', argv).must_equal(1)
+    end
   end
 
   # N-Triples to JSON/JSON-LD tests.
