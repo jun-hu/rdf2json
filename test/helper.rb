@@ -31,13 +31,15 @@ require 'shoulda'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'rdf'
-require 'rdf/ntriples'
-require 'rdf/nquads'
-require 'json/ld'
-require 'optparse'
-
 require 'coveralls'
+
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'test'
+  add_filter 'gems'
+  add_group 'Converter', 'lib'
+end
+
 Coveralls.wear!
 
 require 'rdf2json'
