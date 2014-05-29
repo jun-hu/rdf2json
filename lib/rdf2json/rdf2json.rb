@@ -62,6 +62,9 @@ def self.cli
     opts.separator ''
     opts.separator 'Common options:'
 
+    opts.on_tail('-s', '--silent', 'Do not output summary statistics.') { |silent|
+      options[:silent] = true
+    }
     opts.on_tail('-h', '--help', 'Show this message.') { |help|
       puts opts
       exit
@@ -123,7 +126,7 @@ def self.cli
 
   begin
     # Why instantiate a Converter instance here? Well, for implementing parallelization later:
-    Converter.new(options[:input], options[:output], input_format, output_format, options[:namespace], options[:prefix]).convert
+    Converter.new(options[:input], options[:output], input_format, output_format, options[:namespace], options[:prefix], options[:silent]).convert
   rescue Interrupt
     # The user hit Ctrl-C, which is okay and does not need error reporting.
     exit 0
