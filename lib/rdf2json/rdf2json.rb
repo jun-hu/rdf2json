@@ -1,9 +1,13 @@
 
+unless defined? Coveralls then
+
 require 'rdf'
 require 'rdf/ntriples'
 require 'rdf/nquads'
 require 'json/ld'
 require 'optparse'
+
+end
 
 # Module that contains a class for transforming RDF N-Triples/N-Quads into
 # JSON/JSON-LD as well as a command line interface implementation for user

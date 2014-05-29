@@ -31,8 +31,14 @@ require 'shoulda'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'rdf2json'
+require 'rdf'
+require 'rdf/ntriples'
+require 'rdf/nquads'
+require 'json/ld'
+require 'optparse'
 
 require 'coveralls'
 Coveralls.wear!
+
+require 'rdf2json'
 
