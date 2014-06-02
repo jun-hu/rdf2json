@@ -1,5 +1,6 @@
 # rdf2json
 
+[![Gem Version](https://badge.fury.io/rb/rdf2json.svg)](http://badge.fury.io/rb/rdf2json)
 [![Build Status](https://secure.travis-ci.org/joejimbo/rdf2json.png)](http://travis-ci.org/joejimbo/rdf2json)
 [![Coverage Status](https://coveralls.io/repos/joejimbo/rdf2json/badge.png?branch=master)](https://coveralls.io/r/joejimbo/rdf2json?branch=master)
 
