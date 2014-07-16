@@ -3,6 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 gem "rdf", ">= 1.1.3"
+gem "json", ">= 1.8.1"
 gem "json-ld", ">= 1.1.3"
 
 # Add dependencies to develop your gem here.
