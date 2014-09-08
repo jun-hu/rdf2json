@@ -271,7 +271,10 @@ class Converter
     return { :read_errors => 0, :no_of_statements => 0, :documents => 0 } unless block and not block.empty?
 
     # Virtuoso output error-handling:
+    #   1. replace escaped tick with a plain tick
+    #   2. replace spaces in IRIs with '%20'
     block.gsub!("\\'", "'")
+    block.gsub!(/(<[^>]+) ([^>]+>)/, '\\1%20\\2')
 
     read_errors = 0
     no_of_statements = 0
