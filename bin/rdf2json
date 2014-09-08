@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'rdf2json'
+
+RDF2JSON::cli
+
